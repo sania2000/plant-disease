@@ -43,7 +43,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     const base64files = files.map((file) => fs.readFileSync(file, "base64"));
 
     const data = {
-        api_key: "sYi6FOheYCiFdU9BKKVXjsAAAJt2Dwq5kKzk4KIhXXIWnF9XJO",
+        api_key: "VNs49m3RZ6mRJKDrh3ohE0nyT0Il2yz9dKxxDfUpKdUd9B33yQ",
         images: base64files,
         modifiers: ["health_all", "disease_similar_images"],
         plant_details: ["common_names", "url", "wiki_description", "taxonomy"],
@@ -66,10 +66,10 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                     }
                 );
                 const myJs = JSON.stringify(newArray, null, 2);
-                res.send(myJs);
+                res.send('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs);
 
                 fs.unlinkSync("./images/100.jpg");
-            }, 5);
+            }, 10);
         })
         .catch((error) => {
             console.error("Error: ", error);
