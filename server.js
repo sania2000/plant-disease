@@ -75,6 +75,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                     responses.push("Your plant is healthy")
                 }
                 res.send(responses)
+                responses = []
 
                 fs.unlinkSync("./images/100.jpg");
             }, 100);
@@ -84,7 +85,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         });
 });
 
-responses = []
+
 
 app.listen(2500, () => {
     console.log("server is up");
