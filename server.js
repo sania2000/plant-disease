@@ -68,7 +68,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                             return el.probability >= 0.1;
                         }
                     );
-                    const myJs = JSON.stringify(newArray, null, 2);
+                    const myJs = JSON.stringify(newArray, null, 3);
                     responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs);
                 }
                 else {
@@ -77,7 +77,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                 res.send(responses)
 
                 fs.unlinkSync("./images/100.jpg");
-            }, 100);
+            }, 10);
         })
         .catch((error) => {
             console.error("Error: ", error);
