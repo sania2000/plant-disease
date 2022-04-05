@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+let responses = []
+
 app.post("/disease", upload.single("image"), async (req, res) => {
     let form = new formData();
     form.append("organs", "leaf");
@@ -31,7 +33,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         setTimeout(async function () {
             console.log("status", status);
             for (i = 0; i < 1; i++) {
-                res.send(data.results[i]);
+                responses.push(data.results[i]);
             }
         }, 3);
     } catch (error) {
@@ -45,7 +47,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     const data = {
         api_key: "VNs49m3RZ6mRJKDrh3ohE0nyT0Il2yz9dKxxDfUpKdUd9B33yQ",
         images: base64files,
-        modifiers: ["health_all", "disease_similar_images"],
+        modifiers: ["health_auto", "disease_similar_images"],
         plant_details: ["common_names", "url", "wiki_description", "taxonomy"],
         disease_details: [
             "classification",
@@ -60,16 +62,22 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         .post("https://api.plant.id/v2/identify", data)
         .then((ress) => {
             setTimeout(async function () {
-                var newArray = ress.data.health_assessment.diseases.filter(
-                    function (el) {
-                        return el.probability >= 0.1;
-                    }
-                );
-                const myJs = JSON.stringify(newArray, null, 2);
-                res.send('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs);
+                if (ress.data.health_assessment.is_healthy == false) {
+                    var newArray = ress.data.health_assessment.diseases.filter(
+                        function (el) {
+                            return el.probability >= 0.1;
+                        }
+                    );
+                    const myJs = JSON.stringify(newArray, null, 2);
+                    responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs);
+                }
+                else {
+                    responses.push("Your plant is healthy")
+                }
+                res.send(responses)
 
                 fs.unlinkSync("./images/100.jpg");
-            }, 10);
+            }, 100);
         })
         .catch((error) => {
             console.error("Error: ", error);
