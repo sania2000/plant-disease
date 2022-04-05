@@ -84,6 +84,8 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         });
 });
 
+responses = []
+
 app.listen(2500, () => {
     console.log("server is up");
 });
