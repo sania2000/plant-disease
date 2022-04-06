@@ -71,10 +71,11 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                     const myJs = JSON.stringify(newArray, null, 2);
                     // const myJss = JSON.parse(myJs)
                     // responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJss);
-                    res.send(responses + 'health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs)
+                    const name = JSON.stringify(responses, null, 2)
+                    res.json(name + 'health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs)
                 }
                 else {
-                    res.send(responses + "Your plant is healthy")
+                    res.json(responses + "Your plant is healthy")
                 }
                 
                 responses = []
