@@ -22,23 +22,23 @@ const upload = multer({ storage: storage });
 let responses = []
 
 app.post("/disease", upload.single("image"), async (req, res) => {
-    let form = new formData();
-    form.append("organs", "leaf");
-    form.append("images", fs.createReadStream("./images/100.jpg"));
+    // let form = new formData();
+    // form.append("organs", "leaf");
+    // form.append("images", fs.createReadStream("./images/100.jpg"));
 
-    try {
-        const { status, data } = await axios.post(API_URL, form, {
-            headers: form.getHeaders(),
-        });
-        setTimeout(async function () {
-            console.log("status", status);
-            for (i = 0; i < 1; i++) {
-                responses.push(data.results[i]);
-            }
-        }, 3);
-    } catch (error) {
-        console.error("error", error);
-    }
+    // try {
+    //     const { status, data } = await axios.post(API_URL, form, {
+    //         headers: form.getHeaders(),
+    //     });
+    //     setTimeout(async function () {
+    //         console.log("status", status);
+    //         for (i = 0; i < 1; i++) {
+    //             responses.push(data.results[i]);
+    //         }
+    //     }, 3);
+    // } catch (error) {
+    //     console.error("error", error);
+    // }
 
     const files = ["./images/100.jpg"];
 
@@ -69,15 +69,13 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                         }
                     );
                     const myJs = JSON.stringify(newArray, null, 2);
-                    // const myJss = JSON.parse(myJs)
-                    // responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJss);
-                    const name = JSON.stringify(responses, null, 2)
-                    res.json(name + 'health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs)
+                    responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability);
+                    responses.push(myJs);
                 }
                 else {
-                    res.json(responses + "Your plant is healthy")
+                    responses.push("Your plant is healthy")
                 }
-                
+                res.send(responses)
                 responses = []
 
                 fs.unlinkSync("./images/100.jpg");
