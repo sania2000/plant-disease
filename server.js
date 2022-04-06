@@ -63,14 +63,13 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         .then((ress) => {
             setTimeout(async function () {
                 if (ress.data.health_assessment.is_healthy == false) {
-                    var newArray = ress.data.health_assessment.diseases.filter(
+                    var health_details = ress.data.health_assessment.diseases.filter(
                         function (el) {
                             return el.probability >= 0.1;
                         }
                     );
-                    const myJs = JSON.stringify(newArray, null, 2);
                     responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability);
-                    responses.push(myJs);
+                    responses.push(health_details);
                 }
                 else {
                     responses.push("Your plant is healthy")
