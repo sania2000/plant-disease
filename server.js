@@ -68,13 +68,15 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                             return el.probability >= 0.1;
                         }
                     );
-                    const myJs = JSON.stringify(newArray, null, 3);
-                    responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs);
+                    const myJs = JSON.stringify(newArray, null, 2);
+                    // const myJss = JSON.parse(myJs)
+                    // responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJss);
+                    res.send(responses + 'health probabilty:' + ress.data.health_assessment.is_healthy_probability + myJs)
                 }
                 else {
-                    responses.push("Your plant is healthy")
+                    res.send(responses + "Your plant is healthy")
                 }
-                res.send(responses)
+                
                 responses = []
 
                 fs.unlinkSync("./images/100.jpg");
