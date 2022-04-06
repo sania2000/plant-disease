@@ -22,23 +22,23 @@ const upload = multer({ storage: storage });
 let responses = []
 
 app.post("/disease", upload.single("image"), async (req, res) => {
-    // let form = new formData();
-    // form.append("organs", "leaf");
-    // form.append("images", fs.createReadStream("./images/100.jpg"));
+    let form = new formData();
+    form.append("organs", "leaf");
+    form.append("images", fs.createReadStream("./images/100.jpg"));
 
-    // try {
-    //     const { status, data } = await axios.post(API_URL, form, {
-    //         headers: form.getHeaders(),
-    //     });
-    //     setTimeout(async function () {
-    //         console.log("status", status);
-    //         for (i = 0; i < 1; i++) {
-    //             responses.push(data.results[i]);
-    //         }
-    //     }, 3);
-    // } catch (error) {
-    //     console.error("error", error);
-    // }
+    try {
+        const { status, data } = await axios.post(API_URL, form, {
+            headers: form.getHeaders(),
+        });
+        setTimeout(async function () {
+            console.log("status", status);
+            for (i = 0; i < 1; i++) {
+                responses.push(data.results[i]);
+            }
+        }, 3);
+    } catch (error) {
+        console.error("error", error);
+    }
 
     const files = ["./images/100.jpg"];
 
