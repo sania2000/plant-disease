@@ -22,23 +22,6 @@ const upload = multer({ storage: storage });
 let responses = []
 
 app.post("/disease", upload.single("image"), async (req, res) => {
-    // let form = new formData();
-    // form.append("organs", "leaf");
-    // form.append("images", fs.createReadStream("./images/100.jpg"));
-
-    // try {
-    //     const { status, data } = await axios.post(API_URL, form, {
-    //         headers: form.getHeaders(),
-    //     });
-    //     setTimeout(async function () {
-    //         console.log("status", status);
-    //         for (i = 0; i < 1; i++) {
-    //             responses.push(data.results[i]);
-    //         }
-    //     }, 3);
-    // } catch (error) {
-    //     console.error("error", error);
-    // }
 
     const files = ["./images/100.jpg"];
 
@@ -69,12 +52,16 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                         }
                     );
                     responses.push(ress.data.suggestions[0].plant_name)
+                    responses.push(ress.data.suggestions[0].plant_details.common_names)
+                    responses.push(ress.data.health_assessment.is_healthy)
                     responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability);
                     responses.push(health_details);
                 }
                 else {
                     responses.push(ress.data.suggestions[0].plant_name)
-                    responses.push("Your plant is healthy")
+                    responses.push(ress.data.suggestions[0].plant_details.common_names)
+                    // responses.push(ress.data.suggestions[0].similar_images)
+                    responses.push(ress.data.health_assessment.is_healthy)
                 }
                 res.send(responses)
                 responses = []
