@@ -62,7 +62,8 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                 else {
                     responses.push({plant_name:  ress.data.suggestions[0].plant_name,
                         common_names: ress.data.suggestions[0].plant_details.common_names,
-                        is_healthy: ress.data.health_assessment.is_healthy})
+                        is_healthy: ress.data.health_assessment.is_healthy,
+                        health_probabilty: ress.data.health_assessment.is_healthy_probability})
                     
                 }
                 res.send(responses)
