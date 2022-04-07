@@ -80,7 +80,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                 responses = []
 
                 fs.unlinkSync("./images/100.jpg");
-            }, 100);
+            }, 10);
         })
         .catch((error) => {
             console.error("Error: ", error);
