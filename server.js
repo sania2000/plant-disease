@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 const multer = require("multer");
 const axios = require("axios");
+const { status } = require("express/lib/response");
 const API_URL =
     "https://my-api.plantnet.org/v2/identify/all?api-key=2b10UwYbG9xqqF6qnzZpgVYe5u";
 
@@ -51,17 +52,18 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                             return el.probability >= 0.1;
                         }
                     );
-                    responses.push(ress.data.suggestions[0].plant_name)
-                    responses.push(ress.data.suggestions[0].plant_details.common_names)
-                    responses.push(ress.data.health_assessment.is_healthy)
-                    responses.push('health probabilty:' + ress.data.health_assessment.is_healthy_probability);
-                    responses.push(health_details);
+                    responses.push({plant_name:  ress.data.suggestions[0].plant_name,
+                        common_names: ress.data.suggestions[0].plant_details.common_names,
+                        is_healthy: ress.data.health_assessment.is_healthy,
+                        health_probabilty: ress.data.health_assessment.is_healthy_probability,
+                        health_details})
+                    
                 }
                 else {
-                    responses.push(ress.data.suggestions[0].plant_name)
-                    responses.push(ress.data.suggestions[0].plant_details.common_names)
-                    // responses.push(ress.data.suggestions[0].similar_images)
-                    responses.push(ress.data.health_assessment.is_healthy)
+                    responses.push({plant_name:  ress.data.suggestions[0].plant_name,
+                        common_names: ress.data.suggestions[0].plant_details.common_names,
+                        is_healthy: ress.data.health_assessment.is_healthy})
+                    
                 }
                 res.send(responses)
                 responses = []
@@ -71,6 +73,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         })
         .catch((error) => {
             console.error("Error: ", error);
+            res.sendStatus(404)
         });
 });
 
