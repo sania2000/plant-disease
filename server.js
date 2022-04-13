@@ -6,7 +6,6 @@ const app = express();
 const multer = require("multer");
 const axios = require("axios");
 const { status } = require("express/lib/response");
-const API_URL =
     "https://my-api.plantnet.org/v2/identify/all?api-key=2b10UwYbG9xqqF6qnzZpgVYe5u";
 
 let id = 100;
@@ -29,7 +28,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     const base64files = files.map((file) => fs.readFileSync(file, "base64"));
 
     const data = {
-        api_key: "VNs49m3RZ6mRJKDrh3ohE0nyT0Il2yz9dKxxDfUpKdUd9B33yQ",
+        api_key: "C71wQQpmQIrFHzpJZq09Dj4bsjnXMX3dbVHJSBZsbti8nkInu3",
         images: base64files,
         modifiers: ["health_auto", "disease_similar_images"],
         plant_details: ["common_names", "url", "wiki_description", "taxonomy"],
