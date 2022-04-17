@@ -57,34 +57,31 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         
             axios.post("https://api.plant.id/v2/identify", data).then((ress) => {
                     setTimeout(async function () {        
-                        if (ress.data.suggestions[0].probability >= 0.6){
-                            if (ress.data.health_assessment.is_healthy == false) {
-                                var health_details = ress.data.health_assessment.diseases.filter(
-                                    function (el) {
-                                        return el.probability >= 0.1;
-                                    }
-                                );
-                                responses.push({plant_name:  ress.data.suggestions[0].plant_name,
-                                    common_names: ress.data.suggestions[0].plant_details.common_names,
-                                    is_healthy: ress.data.health_assessment.is_healthy,
-                                    health_probabilty: ress.data.health_assessment.is_healthy_probability,
-                                    health_details})
-                            
+                        
+                        if (ress.data.health_assessment.is_healthy == false) {
+                            var health_details = ress.data.health_assessment.diseases.filter(
+                                function (el) {
+                                    return el.probability >= 0.1;
                                 }
-                            else {
-                                responses.push({plant_name:  ress.data.suggestions[0].plant_name,
-                                    common_names: ress.data.suggestions[0].plant_details.common_names,
-                                    is_healthy: ress.data.health_assessment.is_healthy,
-                                    health_probabilty: ress.data.health_assessment.is_healthy_probability})
-                            
+                            );
+                            responses.push({plant_name:  ress.data.suggestions[0].plant_name,
+                                common_names: ress.data.suggestions[0].plant_details.common_names,
+                                is_healthy: ress.data.health_assessment.is_healthy,
+                                health_probabilty: ress.data.health_assessment.is_healthy_probability,
+                                health_details})
+                        
                             }
+                        else {
+                            responses.push({plant_name:  ress.data.suggestions[0].plant_name,
+                                common_names: ress.data.suggestions[0].plant_details.common_names,
+                                is_healthy: ress.data.health_assessment.is_healthy,
+                                health_probabilty: ress.data.health_assessment.is_healthy_probability})
+                            
+                        }
                         
                         res.send(responses)
                         responses = []
-                        }
-                        else{
-                            res.sendStatus(404)
-                        }
+                        
                         fs.unlinkSync("./images/100.jpg");
                     }, 3);
                 })
