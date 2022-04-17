@@ -57,7 +57,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         
             axios.post("https://api.plant.id/v2/identify", data).then((ress) => {
                     setTimeout(async function () {        
-                        if (ress.data.suggestions[0].probability >= 0.7){
+                        if (ress.data.suggestions[0].probability >= 0.6){
                             if (ress.data.health_assessment.is_healthy == false) {
                                 var health_details = ress.data.health_assessment.diseases.filter(
                                     function (el) {
