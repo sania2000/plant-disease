@@ -94,7 +94,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
             res.sendStatus(404)
         }
     }catch (error) {
-        console.error('error', error);
+        res.sendStatus(404)
     }
 });
 
