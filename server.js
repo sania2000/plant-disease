@@ -82,7 +82,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                         res.send(responses)
                         responses = []
                     }else{ 
-                        res.sendStatus(404)
+                        console.log(404)
                     }
                         fs.unlinkSync("./images/100.jpg");
               }, 3);
