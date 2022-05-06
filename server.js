@@ -36,7 +36,8 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     
         console.log('status', status);
 
-        if (status == 200 && score > 0.4){
+        if (status == 200){
+            
             const files = ["./images/100.jpg"];
 
             const base64files = files.map((file) => fs.readFileSync(file, "base64"));
@@ -57,7 +58,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         
             axios.post("https://api.plant.id/v2/identify", data).then((ress) => {
                     setTimeout(async function () {        
-                        
+                        if(ress.data.suggestions[0].probability> 0.1){
                         if (ress.data.health_assessment.is_healthy == false) {
                             var health_details = ress.data.health_assessment.diseases.filter(
                                 function (el) {
@@ -68,7 +69,8 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                                 common_names: ress.data.suggestions[0].plant_details.common_names,
                                 is_healthy: ress.data.health_assessment.is_healthy,
                                 health_probabilty: ress.data.health_assessment.is_healthy_probability,
-                                health_details})
+                                health_details,
+                            pro: ress.data.suggestions[0].probability})
                         
                             }
                         else {
@@ -81,19 +83,18 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                         
                         res.send(responses)
                         responses = []
-                        
+                    }else{
+                        res.sendStatus(404)
+                    }
                         fs.unlinkSync("./images/100.jpg");
-                    }, 3);
+              }, 3);
                 })
                 .catch((error) => {
                     console.error("Error: ", error);
                     res.sendStatus(404)
-                });
+                });}
             
-        }else{
-            res.sendStatus(404)
-        }
-    }catch (error) {
+        }catch (error) {
         res.sendStatus(404)
     }
 });
