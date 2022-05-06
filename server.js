@@ -89,6 +89,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
             res.sendStatus(404)
             fs.unlinkSync("./images/100.jpg");
         }}
+        
         catch (error) {
         res.sendStatus(404)
     }
