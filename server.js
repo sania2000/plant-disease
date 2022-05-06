@@ -27,7 +27,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
 	form.append('organs', "leaf");
 	form.append('images', fs.createReadStream('./images/100.jpg'));
     try {
-        const { status, } = await axios.post(
+        const { status, data} = await axios.post(
             "https://my-api.plantnet.org/v2/identify/all?api-key=2b10n6FfQPd3rFV6AkYg2She",
             form, {
                 headers: form.getHeaders()
@@ -36,7 +36,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     
         console.log('status', status);
 
-        if (status == 200){
+        if (data.results[0].score> 0.3){
             
             const files = ["./images/100.jpg"];
 
@@ -58,7 +58,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         
             axios.post("https://api.plant.id/v2/identify", data).then((ress) => {
                     setTimeout(async function () {        
-                        if(ress.data.suggestions[0].probability> 0.1){
+                        
                         if (ress.data.health_assessment.is_healthy == false) {
                             var health_details = ress.data.health_assessment.diseases.filter(
                                 function (el) {
@@ -81,18 +81,15 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                         
                         res.send(responses)
                         responses = []
-                    }else{ 
-                        console.log(404)
-                    }
+                    
                         fs.unlinkSync("./images/100.jpg");
-              }, 3);
-                })
-                .catch((error) => {
-                    console.error("Error: ", error);
-                    res.sendStatus(404)
-                });}
-            
-        }catch (error) {
+              } , 3);
+             })}
+             else{
+            res.sendStatus(404)
+            fs.unlinkSync("./images/100.jpg");
+        }}
+        catch (error) {
         res.sendStatus(404)
     }
 });
