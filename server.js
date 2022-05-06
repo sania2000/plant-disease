@@ -36,7 +36,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     
         console.log('status', status);
 
-        if (data.results[0].score> 0.3){
+        if (data.results[0].score> 0.1){
             
             const files = ["./images/100.jpg"];
 
@@ -89,7 +89,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
             res.sendStatus(404)
             fs.unlinkSync("./images/100.jpg");
         }}
-        
+
         catch (error) {
         res.sendStatus(404)
     }
