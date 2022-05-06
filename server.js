@@ -36,7 +36,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     
         console.log('status', status);
 
-        if (status == 200){
+        if (status == 200 && score > 0.4){
             const files = ["./images/100.jpg"];
 
             const base64files = files.map((file) => fs.readFileSync(file, "base64"));
