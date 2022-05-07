@@ -84,13 +84,11 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                             res.sendStatus(404)
                             fs.unlinkSync("./images/" + id + ".jpg");
                         }
-                    
-                       
               }, 3);
              })}}
         catch (error) {
-        res.sendStatus(404)
-        fs.unlinkSync("./images/" + id + ".jpg");
+            fs.unlinkSync("./images/" + id + ".jpg");
+            res.sendStatus(404)
     }
 });
 id++
