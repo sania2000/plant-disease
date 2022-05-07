@@ -95,7 +95,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     }
 });
 
-
+id++
 
 app.listen(2500, () => {
     console.log("server is up");
