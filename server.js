@@ -8,7 +8,7 @@ const axios = require("axios");
 const { status } = require("express/lib/response");
     
 
-let id = 101;
+let id = 1;
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "images");
@@ -27,7 +27,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
 	form.append('organs', "leaf");
 	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
     try {
-        const { status, data} = await axios.post(
+        const { status} = await axios.post(
             "https://my-api.plantnet.org/v2/identify/all?api-key=2b10n6FfQPd3rFV6AkYg2She",
             form, {
                 headers: form.getHeaders()
@@ -36,7 +36,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
     
         console.log('status', status);
 
-        if (data.results[0].score> 0.1){
+        if (status == 200){
             
             const files = ["./images/" + id + ".jpg"];
 
@@ -58,7 +58,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         
             axios.post("https://api.plant.id/v2/identify", data).then((ress) => {
                     setTimeout(async function () {        
-                        
+                    if (ress.data.suggestions[0].probability > 0.2 ){    
                         if (ress.data.health_assessment.is_healthy == false) {
                             var health_details = ress.data.health_assessment.diseases.filter(
                                 function (el) {
@@ -83,13 +83,12 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                         responses = []
                     
                         fs.unlinkSync("./images/" + id + ".jpg");
-              } , 3);
+              }} , 3);
              })}
              else{
             res.sendStatus(404)
             fs.unlinkSync("./images/" + id + ".jpg");
         }}
-
         catch (error) {
         res.sendStatus(404)
         fs.unlinkSync("./images/" + id + ".jpg");
