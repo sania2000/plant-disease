@@ -78,17 +78,16 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                                 health_probabilty: ress.data.health_assessment.is_healthy_probability})
                             
                         }
-                        
-                        res.send(responses)
-                        responses = []
-                    
                         fs.unlinkSync("./images/" + id + ".jpg");
-              }} , 3);
-             })}
-             else{
-            res.sendStatus(404)
-            fs.unlinkSync("./images/" + id + ".jpg");
-        }}
+                        res.send(responses)
+                        responses = []}else{
+                            res.sendStatus(404)
+                            fs.unlinkSync("./images/" + id + ".jpg");
+                        }
+                    
+                       
+              }, 3);
+             })}}
         catch (error) {
         res.sendStatus(404)
         fs.unlinkSync("./images/" + id + ".jpg");
