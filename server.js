@@ -8,7 +8,7 @@ const axios = require("axios");
 const { status } = require("express/lib/response");
     
 
-let id = 100;
+let id = 101;
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "images");
@@ -25,7 +25,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
 
     let form = new formData();
 	form.append('organs', "leaf");
-	form.append('images', fs.createReadStream('./images/100.jpg'));
+	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
     try {
         const { status, data} = await axios.post(
             "https://my-api.plantnet.org/v2/identify/all?api-key=2b10n6FfQPd3rFV6AkYg2She",
@@ -38,7 +38,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
 
         if (data.results[0].score> 0.1){
             
-            const files = ["./images/100.jpg"];
+            const files = ["./images/" + id + ".jpg"];
 
             const base64files = files.map((file) => fs.readFileSync(file, "base64"));
         
@@ -82,20 +82,21 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                         res.send(responses)
                         responses = []
                     
-                        fs.unlinkSync("./images/100.jpg");
+                        fs.unlinkSync("./images/" + id + ".jpg");
               } , 3);
              })}
              else{
             res.sendStatus(404)
-            fs.unlinkSync("./images/100.jpg");
+            fs.unlinkSync("./images/" + id + ".jpg");
         }}
 
         catch (error) {
         res.sendStatus(404)
+        fs.unlinkSync("./images/" + id + ".jpg");
     }
 });
-
 id++
+
 
 app.listen(2500, () => {
     console.log("server is up");
