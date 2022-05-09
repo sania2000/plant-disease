@@ -6,7 +6,6 @@ const app = express();
 const multer = require("multer");
 const axios = require("axios");
 const { status } = require("express/lib/response");
-    
 
 let id = 10;
 const storage = multer.diskStorage({
@@ -18,11 +17,9 @@ const storage = multer.diskStorage({
     },
 });
 const upload = multer({ storage: storage });
-
 let responses = []
 
-app.post("/disease", upload.single("image"), async (req, res) => {
-
+app.post("/disease", upload.single("image"), async (req, res) =>{
     let form = new formData();
 	form.append('organs', "leaf");
 	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
@@ -35,9 +32,7 @@ app.post("/disease", upload.single("image"), async (req, res) => {
         );
     
         console.log('status', status);
-
         if (status == 200){
-            
             const files = ["./images/" + id + ".jpg"];
 
             const base64files = files.map((file) => fs.readFileSync(file, "base64"));
@@ -55,10 +50,9 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                     "url",
                 ],
             };
-        
-            axios.post("https://api.plant.id/v2/identify", data).then((ress) => {
-                    setTimeout(async function () {        
-                    if (ress.data.suggestions[0].probability > 0.2 ){    
+            axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
+                setTimeout(async function () {
+                    if(ress.data.suggestions[0].probability > 0.2){
                         if (ress.data.health_assessment.is_healthy == false) {
                             var health_details = ress.data.health_assessment.diseases.filter(
                                 function (el) {
@@ -78,21 +72,30 @@ app.post("/disease", upload.single("image"), async (req, res) => {
                                 health_probabilty: ress.data.health_assessment.is_healthy_probability})
                             
                         }
-                        fs.unlinkSync("./images/" + id + ".jpg");
+                    }
+                    else{
+                        res.sendStatus(404)
+                    }
+                    fs.unlinkSync("./images/" + id + ".jpg");
                         res.send(responses)
-                        responses = []}else{
-                            res.sendStatus(404)
-                            fs.unlinkSync("./images/" + id + ".jpg");
-                        }
-              }, 3);
-             })}}
-        catch (error) {
-            fs.unlinkSync("./images/" + id + ".jpg");
-            res.sendStatus(404)
-    }
-});
-id++
+                        id++
+                        responses = [],3})    
+            })
 
+        }
+        else{
+            res.sendStatus(404)
+            fs.unlinkSync("./images/" + id + ".jpg")
+            id++
+        }
+
+    }catch(error){
+        console.log(error)
+        res.sendStatus(404)
+        fs.unlinkSync("./images/" + id + ".jpg")
+        id++
+    }
+})
 
 app.listen(2500, () => {
     console.log("server is up");
