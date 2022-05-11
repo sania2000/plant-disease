@@ -25,7 +25,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
     try {
         const { status} = await axios.post(
-            "https://my-api.plantnet.org/v2/identify/all?api-key=2b10luW6T2oHqe9ZWeYPslPeO",
+            "https://my-api.plantnet.org/v2/identify/all?api-key=2b10I3sduSvor9yv6gH2T3J9j",
             form, {
                 headers: form.getHeaders()
             }
