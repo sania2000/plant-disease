@@ -7,6 +7,13 @@ const multer = require("multer");
 const axios = require("axios");
 const { status } = require("express/lib/response");
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+const plantnetApi = ["2b10FjWfl6lZGMJUCATAhx", "2b105C0M6Nbrk5oXRhRBHsKu", "2b10SMEAix4wI8bEM1cXnUblO",
+ "2b10QNBRU2BMkwbkghCIlAoI6", "2b10F0vdup9VJNGG0fIRQvhDu", "2b10c38e3igIkX4tyWjpnqUO"]
+
 let id = 10;
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -25,7 +32,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
     try {
         const { status} = await axios.post(
-            "https://my-api.plantnet.org/v2/identify/all?api-key=2b10k9qPrdPRc9sQI4IvP0r7nu",
+            "https://my-api.plantnet.org/v2/identify/all?api-key=" + plantnetApi[getRandomInt(5)],
             form, {
                 headers: form.getHeaders()
             }
@@ -72,27 +79,25 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
                                 health_probabilty: ress.data.health_assessment.is_healthy_probability})
                             
                         }
+                        res.send(responses)
+                        id++
+                        responses = []
                     }
                     else{
                         res.sendStatus(404)
-                    }
-                    fs.unlinkSync("./images/" + id + ".jpg");
-                        res.send(responses)
                         id++
-                        responses = [],3})    
+                    }3})    
             })
 
         }
         else{
             res.sendStatus(404)
-            fs.unlinkSync("./images/" + id + ".jpg")
             id++
         }
 
     }catch(error){
         console.log(error)
         res.sendStatus(404)
-        fs.unlinkSync("./images/" + id + ".jpg")
         id++
     }
 })
