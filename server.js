@@ -11,8 +11,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
 
-const plantnetApi = ["2b10FjWfl6lZGMJUCATAhx", "2b105C0M6Nbrk5oXRhRBHsKu", "2b10SMEAix4wI8bEM1cXnUblO",
- "2b10QNBRU2BMkwbkghCIlAoI6", "2b10F0vdup9VJNGG0fIRQvhDu", "2b10c38e3igIkX4tyWjpnqUO"]
+const plantnetApi = ["2b10ILAyD9UEDN9hNIHD9ERwDO", "2b10buf4wF1cSw1pTstUoPQ8vu", "2b10v4bFYcW5wXbmDwicnEWe"]
 
 let id = 10;
 const storage = multer.diskStorage({
@@ -32,7 +31,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
     try {
         const { status} = await axios.post(
-            "https://my-api.plantnet.org/v2/identify/all?api-key=" + plantnetApi[getRandomInt(5)],
+            "https://my-api.plantnet.org/v2/identify/all?api-key=" + plantnetApi[getRandomInt(2)],
             form, {
                 headers: form.getHeaders()
             }

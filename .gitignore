@@ -1,1 +1,3 @@
 pg2.js
+config/db.js
+middleWare/upload.js
