@@ -6,15 +6,11 @@ const app = express();
 const multer = require("multer");
 const axios = require("axios");
 const { status } = require("express/lib/response");
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
 
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-  }
-
-const plantnetApi = ["2b10ILAyD9UEDN9hNIHD9ERwDO", "2b10buf4wF1cSw1pTstUoPQ8vu", "2b10v4bFYcW5wXbmDwicnEWe"]
-
-let id = 10;
-const storage = multer.diskStorage({
+let id = 20;
+  storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "images");
     },
@@ -22,16 +18,26 @@ const storage = multer.diskStorage({
         cb(null, id + path.extname(file.originalname));
     },
 });
-const upload = multer({ storage: storage });
+  const upload = multer({ storage });
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+  }
+
+const plantnetApi = ["2b10ILAyD9UEDN9hNIHD9ERwDO", "2b10buf4wF1cSw1pTstUoPQ8vu", "2b10v4bFYcW5wXbmDwicnEWe"]
+
+
+
 let responses = []
 
 app.post("/disease", upload.single("image"), async (req, res) =>{
     let form = new formData();
 	form.append('organs', "leaf");
 	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
+    req.data = req.file.buffer
     try {
         const { status} = await axios.post(
-            "https://my-api.plantnet.org/v2/identify/all?api-key=" + plantnetApi[getRandomInt(2)],
+            "https://my-api.plantnet.org/v2/identify/all?api-key=2b10RQU4Rm7QH4CTKZqpdJFyu",
             form, {
                 headers: form.getHeaders()
             }
