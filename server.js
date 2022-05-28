@@ -7,7 +7,7 @@ const axios = require("axios");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/plantTips')
+mongoose.connect('mongodb://127.0.0.1:27017/plantTips')
 const db = mongoose.connection;
 
 //check db connection
