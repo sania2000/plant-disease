@@ -8,4 +8,4 @@ let dataSchema = mongoose.Schema({
     response:{}
 })
 
-let Data = module.exports = mongoose.model('plantData', dataSchema)
+module.exports = mongoose.model('plantData', dataSchema)
