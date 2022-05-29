@@ -38,10 +38,9 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
 
-const plantnetApi = ["2b10RQU4Rm7QH4CTKZqpdJFyu", "2b10A0AOC4oABnJVI06YPVgVdu", "2b10qXfZxIjNSHzjIL0cXOvOp",
-"2b1019g2sfS5hUOR0mD7Zta0x", "2b10v4bFYcW5wXbmDwicnEWe", "2b107U7yAF8SrizWuZtaLN4Xq",
-"2b10cARxCplNvJLjXS5OMmrt", "2b10iVujY4n6d9MsL6GE6CrA", "2b100FRT6qqS8C7RIBLFqVt",
- ]
+// const plantnetApi = ["2b10RQU4Rm7QH4CTKZqpdJFyu", "2b10A0AOC4oABnJVI06YPVgVdu", "2b10qXfZxIjNSHzjIL0cXOvOp",
+// "2b1019g2sfS5hUOR0mD7Zta0x", "2b10v4bFYcW5wXbmDwicnEWe", "2b107U7yAF8SrizWuZtaLN4Xq",
+// "2b10cARxCplNvJLjXS5OMmrt", "2b10iVujY4n6d9MsL6GE6CrA", "2b100FRT6qqS8C7RIBLFqVt"]
 
 //storing image
 let id = 20;
@@ -62,21 +61,21 @@ let responses = []
 app.post("/disease", upload.single("image"), async (req, res) =>{
 
     //reading image
-    let form = new formData();
-	form.append('organs', "leaf");
-	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
+    // let form = new formData();
+	// form.append('organs', "leaf");
+	// form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
 
     //checking with plantnet (if user sent proper image)
-    try {
-        const { status} = await axios.post(
-            "https://my-api.plantnet.org/v2/identify/all?api-key=" + plantnetApi[getRandomInt(8)],
-            form, {
-                headers: form.getHeaders()
-            }
-        );
+    // try {
+    //     const { status} = await axios.post(
+    //         "https://my-api.plantnet.org/v2/identify/all?api-key=2b10W39MttPR3dcxrb6qjXjvu",
+    //         form, {
+    //             headers: form.getHeaders()
+    //         }
+    //     );
     
-        console.log('status', status);
-        if (status == 200){
+        // console.log('status', status);
+        // if (status == 200){
 
             //sending image to plant.id
             const files = ["./images/" + id + ".jpg"];
@@ -166,43 +165,43 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
                     }3})    
             })
 
-        }else{
-            res.sendStatus(404)
+    //     }else{
+    //         res.sendStatus(404)
 
-            //changing id
-            id++
+    //         //changing id
+    //         id++
 
-            //storing model in db
-            let plantdata = new plantData()
-            plantdata.photo_id = id;
-            plantdata.response = "not plant";
-            plantdata.save((error) => {
-                if (error){
-                console.log(error);
-            }
-                else{
-                    console.log('saved');
-                }
-            });
-        }
-    }catch(error){
-        console.log(error)
-        res.sendStatus(404);
-        id++;
+    //         //storing model in db
+    //         let plantdata = new plantData()
+    //         plantdata.photo_id = id;
+    //         plantdata.response = "not plant";
+    //         plantdata.save((error) => {
+    //             if (error){
+    //             console.log(error);
+    //         }
+    //             else{
+    //                 console.log('saved');
+    //             }
+    //         });
+    //     }
+    // }catch(error){
+    //     console.log(error)
+    //     res.sendStatus(404);
+    //     id++;
 
-        //storing model in db
-        let plantdata = new plantData()
-        plantdata.photo_id = id;
-        plantdata.response = "not plant";
-        plantdata.save((error) => {
-            if (error){
-            console.log(error);
-        }
-            else{
-                console.log('saved');
-            }
-        });
-    }
+    //     //storing model in db
+    //     let plantdata = new plantData()
+    //     plantdata.photo_id = id;
+    //     plantdata.response = "not plant";
+    //     plantdata.save((error) => {
+    //         if (error){
+    //         console.log(error);
+    //     }
+    //         else{
+    //             console.log('saved');
+    //         }
+    //     });
+    // }
 })
 
 //listening on port 2500
