@@ -7,6 +7,7 @@ const axios = require("axios");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose')
 
+//connecting to db
 mongoose.connect('mongodb://127.0.0.1:27017/plantTips')
 const db = mongoose.connection;
 
@@ -68,9 +69,9 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 	form.append('organs', "leaf");
 	form.append('images', fs.createReadStream("./images/" + id + ".jpg"));
 
-    // checking with plantnet (if user sent proper image)
+    //setting headers for plantnet
     try {
-        const { status} = await axios.post(
+        const {status} = await axios.post(
             "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
             form, 
             {
@@ -79,28 +80,38 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
         );
     
         console.log('status', status);
+
+        //getting status from plantnet
         if (!status == 200){
             //changing id
             id++;
             return res.sendStatus(404);
         }
+        console.log(status)
 
-        // sending image to plant.id
+        //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
         const base64files = files.map((file) => fs.readFileSync(file, "base64"));
         const data = {
             api_key: "C71wQQpmQIrFHzpJZq09Dj4bsjnXMX3dbVHJSBZsbti8nkInu3",
             images: base64files,
             modifiers: ["health_auto", "disease_similar_images"],
-            plant_details: ["common_names", "url", "wiki_description", "taxonomy"],
+            plant_details: ["common_names",
+            "url",
+            "wiki_description",
+            "taxonomy"],
             disease_details: [
                 "classification",
                 "common_names",
                 "description",
                 "treatment",
-                "url",
-            ]};
+                "url"]
+            };
+
+        //sending photo to plant.id    
         axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
+
+            //declaring variables
             const plantName = ress.data.suggestions[0].plant_name;
             const commonNames = ress.data.suggestions[0].plant_details.common_names;
             const isHealthy = ress.data.health_assessment.is_healthy;
@@ -109,8 +120,6 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
                 function (el) {
                     return el.probability >= 0.1;
                 });
-
-
             
             //checking if image is proper with plant.id
             if(!ress.data.suggestions[0].probability > 0.2){
@@ -122,17 +131,22 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             if (ress.data.health_assessment.is_healthy == false) {
                 
                 //pushing response(unhealthy plant)
-                responses.push({plant_name: plantName ,
+                responses.push(
+                    {plant_name: plantName ,
                     common_names: commonNames,
                     is_healthy: isHealthy,
                     health_probabilty: healthProbability,
-                    health_details});}
+                    health_details}
+                    );
+                }
 
-                //pushing responses(healthy plant)
-                responses.push({plant_name: plantName,
-                    common_names: commonNames,
-                    is_healthy: isHealthy,
-                    health_probabilty: healthProbability});
+            //pushing responses(healthy plant)
+            responses.push(
+                {plant_name: plantName,
+                common_names: commonNames,
+                is_healthy: isHealthy,
+                health_probabilty: healthProbability}
+                );
 
                 
             //sending response
@@ -154,8 +168,9 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             id++;
 
             //emtying responses array
-            responses = [];    
-        })}
+            responses = [];
+        }
+            )}
         catch(error){
         console.log(error)
         res.sendStatus(404);
