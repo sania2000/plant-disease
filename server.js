@@ -47,7 +47,7 @@ const plantnetApi = ["2b10RQU4Rm7QH4CTKZqpdJFyu", "2b10A0AOC4oABnJVI06YPVgVdu",
 const key = plantnetApi[getRandomInt(8)]
 
 //storing image
-let id = 20;
+let id = getRandomInt(10000000);
 
 storage = multer.diskStorage({
  destination: (req, file, cb) => {
@@ -60,6 +60,8 @@ filename: (req, file, cb) => {
 const upload = multer({ storage });
 
 let responses = []
+
+   
 
 //posting responses
 app.post("/disease", upload.single("image"), async (req, res) =>{
