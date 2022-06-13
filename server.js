@@ -73,23 +73,23 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 
     //setting headers for plantnet
     try {
-        const {status} = await axios.post(
-            "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
-            form, 
-            {
-                headers: form.getHeaders()
-            }
-        );
+        // const {status} = await axios.post(
+        //     "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
+        //     form, 
+        //     {
+        //         headers: form.getHeaders()
+        //     }
+        // );
     
-        console.log('status', status);
+        // console.log('status', status);
 
-        //getting status from plantnet
-        if (!status == 200){
-            //changing id
-            id++;
-            return res.sendStatus(404);
-        }
-        console.log(status)
+        // //getting status from plantnet
+        // if (!status == 200){
+        //     //changing id
+        //     id++;
+        //     return res.sendStatus(404);
+        // }
+        // console.log(status)
 
         //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
@@ -125,7 +125,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             
             //checking if image is proper with plant.id
             if(!ress.data.suggestions[0].probability > 0.2){
-                id++;
+                id = getRandomInt(10000000);
                 return res.sendStatus(404);
             }
 
@@ -152,6 +152,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 
                 
             //sending response
+            id = getRandomInt(10000000);
             res.send(responses);
 
             //storing model in db
@@ -165,18 +166,15 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
                     console.log('saved');
                 }
             });
-                    
-            //changing id
-            id++;
 
             //emtying responses array
             responses = [];
         }
             )}
         catch(error){
-        console.log(error)
-        res.sendStatus(404);
-        id++;
+            id = getRandomInt(10000000);
+            console.log(error)
+            res.sendStatus(404);
     }
 })
 
