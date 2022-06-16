@@ -30,6 +30,7 @@ app.use(bodyParser.json());
 
 //bring in models
 let plantData = require('./models/data')
+let Photo = require('./models/photos')
 
 
 
@@ -64,7 +65,9 @@ let responses = []
    
 
 //posting responses
-app.post("/disease", upload.single("image"), async (req, res) =>{
+app.post("/disease/:id", upload.single("image"), async (req, res) =>{
+    //getting user's id
+    const userId = req.params.id
 
     //reading image
     let form = new formData();
@@ -113,6 +116,12 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
         //sending photo to plant.id    
         axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
 
+            //checking if image is proper with plant.id
+            if(!ress.data.suggestions[0].probability > 0.2){
+                id = getRandomInt(10000000);
+                return res.sendStatus(404);
+            }
+
             //declaring variables
             const plantName = ress.data.suggestions[0].plant_name;
             const commonNames = ress.data.suggestions[0].plant_details.common_names;
@@ -122,12 +131,6 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
                 function (el) {
                     return el.probability >= 0.1;
                 });
-            
-            //checking if image is proper with plant.id
-            if(!ress.data.suggestions[0].probability > 0.2){
-                id = getRandomInt(10000000);
-                return res.sendStatus(404);
-            }
 
             //checking if the plant is healthy
             if (ress.data.health_assessment.is_healthy == false) {
@@ -167,6 +170,20 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
                 }
             });
 
+            //new Photo model
+            let photo = new Photo()
+            photo.userId = userId;
+            photo.photoId = id;
+            photo.responses = responses
+            // photo.save()
+            photo.save((error) => {
+                if (error){
+                console.log(error);
+            }else{
+                    console.log('saved');
+                }
+            });
+
             //emtying responses array
             responses = [];
         }
@@ -175,6 +192,18 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             id = getRandomInt(10000000);
             console.log(error)
             res.sendStatus(404);
+    }
+})
+
+//getting images
+app.get('/history/:id', async(req, res) => {
+    const userid = req.params.id
+    try{
+        await Photo.find({userId:userid}, function(err, docs) {
+            res.send(docs)
+        }).clone()
+    }catch(error){
+        console.log(error)
     }
 })
 
