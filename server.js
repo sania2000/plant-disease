@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 
 //bring in models
 let plantData = require('./models/data')
-let Photo = require('./models/photos')
+// let Photo = require('./models/photos')
 
 
 
