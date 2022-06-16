@@ -119,7 +119,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
         axios.post("https://api.plant.id/v2/identify", dataa).then((ress) =>{
 
             //checking if image is proper with plant.id
-            if(ress.data.suggestions[0].probability < 0.1){
+            if(ress.dataa.suggestions[0].probability < 0.1){
                 id = getRandomInt(10000000);
                 res.sendStatus(404);
             }
@@ -131,7 +131,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
                 const healthProbability = ress.dataa.health_assessment.is_healthy_probability;
                 var health_details = ress.dataa.health_assessment.diseases
                 //checking if the plant is healthy
-                if (ress.data.health_assessment.is_healthy == false) {
+                if (ress.dataa.health_assessment.is_healthy == false) {
                 
                     //pushing response(unhealthy plant)
                     responses.push(
