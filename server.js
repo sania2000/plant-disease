@@ -116,7 +116,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             };
 
         //sending photo to plant.id    
-        axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
+        axios.post("https://api.plant.id/v2/identify", dataa).then((ress) =>{
 
             //checking if image is proper with plant.id
             if(ress.data.suggestions[0].probability < 0.1){
