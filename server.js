@@ -77,28 +77,29 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 
     //setting headers for plantnet
     try {
-        // const {status} = await axios.post(
-        //     "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
-        //     form, 
-        //     {
-        //         headers: form.getHeaders()
-        //     }
-        // );
+        const {status, data} = await axios.post(
+            "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
+            form, 
+            {
+                headers: form.getHeaders()
+            }
+        );
     
-        // console.log('status', status);
+        console.log('status', status);
+        console.log('data', require('util').inspect(data, false, null, true));
 
-        // //getting status from plantnet
-        // if (!status == 200){
-        //     //changing id
-        //     id++;
-        //     return res.sendStatus(404);
-        // }
-        // console.log(status)
+        //getting status from plantnet
+        if (data.results[0].score < 0.1){
+            //changing id
+            id++;
+            return res.sendStatus(404);
+        }
+        console.log(status)
 
         // //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
         const base64files = files.map((file) => fs.readFileSync(file, "base64"));
-        const data = {
+        const dataa = {
             api_key: "C71wQQpmQIrFHzpJZq09Dj4bsjnXMX3dbVHJSBZsbti8nkInu3",
             images: base64files,
             modifiers: ["health_auto", "disease_similar_images"],
@@ -118,17 +119,17 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
         axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
 
             //checking if image is proper with plant.id
-            if(ress.data.suggestions[1].probability < 0.2){
+            if(ress.data.suggestions[0].probability < 0.1){
                 id = getRandomInt(10000000);
                 res.sendStatus(404);
             }
             else{
             //declaring variables
-                const plantName = ress.data.suggestions[0].plant_name;
-                const commonNames = ress.data.suggestions[0].plant_details.common_names;
-                const isHealthy = ress.data.health_assessment.is_healthy;
-                const healthProbability = ress.data.health_assessment.is_healthy_probability;
-                var health_details = ress.data.health_assessment.diseases
+                const plantName = ress.dataa.suggestions[0].plant_name;
+                const commonNames = ress.dataa.suggestions[0].plant_details.common_names;
+                const isHealthy = ress.dataa.health_assessment.is_healthy;
+                const healthProbability = ress.dataa.health_assessment.is_healthy_probability;
+                var health_details = ress.dataa.health_assessment.diseases
                 //checking if the plant is healthy
                 if (ress.data.health_assessment.is_healthy == false) {
                 
