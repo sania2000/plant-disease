@@ -77,7 +77,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 
     //setting headers for plantnet
     try {
-        const {status, data} = await axios.post(
+        var {status, data} = await axios.post(
             "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
             form, 
             {
@@ -99,7 +99,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
         // //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
         const base64files = files.map((file) => fs.readFileSync(file, "base64"));
-        const dataa = {
+        data = {
             api_key: "C71wQQpmQIrFHzpJZq09Dj4bsjnXMX3dbVHJSBZsbti8nkInu3",
             images: base64files,
             modifiers: ["health_auto", "disease_similar_images"],
@@ -116,22 +116,22 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             };
 
         //sending photo to plant.id    
-        axios.post("https://api.plant.id/v2/identify", dataa).then((ress) =>{
+        axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
 
             //checking if image is proper with plant.id
-            if(ress.dataa.suggestions[0].probability < 0.1){
+            if(ress.data.suggestions[0].probability < 0.1){
                 id = getRandomInt(10000000);
                 res.sendStatus(404);
             }
             else{
             //declaring variables
-                const plantName = ress.dataa.suggestions[0].plant_name;
-                const commonNames = ress.dataa.suggestions[0].plant_details.common_names;
-                const isHealthy = ress.dataa.health_assessment.is_healthy;
-                const healthProbability = ress.dataa.health_assessment.is_healthy_probability;
-                var health_details = ress.dataa.health_assessment.diseases
+                const plantName = ress.data.suggestions[0].plant_name;
+                const commonNames = ress.data.suggestions[0].plant_details.common_names;
+                const isHealthy = ress.data.health_assessment.is_healthy;
+                const healthProbability = ress.data.health_assessment.is_healthy_probability;
+                var health_details = ress.data.health_assessment.diseases
                 //checking if the plant is healthy
-                if (ress.dataa.health_assessment.is_healthy == false) {
+                if (ress.data.health_assessment.is_healthy == false) {
                 
                     //pushing response(unhealthy plant)
                     responses.push(
