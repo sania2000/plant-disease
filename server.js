@@ -85,16 +85,16 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             }
         );
     
-        console.log('status', status);
-        console.log('data', require('util').inspect(data, false, null, true));
+       
 
         //getting status from plantnet
-        if (data.results[0].score < 0.1){
+        if (data.results[0].score < 0.25 || status != 200){
             //changing id
             id++;
             return res.sendStatus(404);
         }
         console.log(status)
+        console.log(data.results[0].score)
 
         // //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
