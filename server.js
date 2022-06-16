@@ -76,23 +76,23 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
 
     //setting headers for plantnet
     try {
-        // const {status} = await axios.post(
-        //     "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
-        //     form, 
-        //     {
-        //         headers: form.getHeaders()
-        //     }
-        // );
+        const {status} = await axios.post(
+            "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
+            form, 
+            {
+                headers: form.getHeaders()
+            }
+        );
     
-        // console.log('status', status);
+        console.log('status', status);
 
-        // //getting status from plantnet
-        // if (!status == 200){
-        //     //changing id
-        //     id++;
-        //     return res.sendStatus(404);
-        // }
-        // console.log(status)
+        //getting status from plantnet
+        if (!status == 200){
+            //changing id
+            id++;
+            return res.sendStatus(404);
+        }
+        console.log(status)
 
         //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
