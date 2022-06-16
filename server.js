@@ -65,9 +65,9 @@ let responses = []
    
 
 //posting responses
-app.post("/disease/:id", upload.single("image"), async (req, res) =>{
+app.post("/disease", upload.single("image"), async (req, res) =>{
     //getting user's id
-    const userId = req.params.id
+    // const userId = req.params.id
 
     //reading image
     let form = new formData();
@@ -171,18 +171,18 @@ app.post("/disease/:id", upload.single("image"), async (req, res) =>{
             });
 
             //new Photo model
-            let photo = new Photo()
-            photo.userId = userId;
-            photo.photoId = id;
-            photo.responses = responses
+            // let photo = new Photo()
+            // photo.userId = userId;
+            // photo.photoId = id;
+            // photo.responses = responses
             // photo.save()
-            photo.save((error) => {
-                if (error){
-                console.log(error);
-            }else{
-                    console.log('saved');
-                }
-            });
+            // photo.save((error) => {
+            //     if (error){
+            //     console.log(error);
+            // }else{
+            //         console.log('saved');
+            //     }
+            // });
 
             //emtying responses array
             responses = [];
