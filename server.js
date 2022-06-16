@@ -29,7 +29,8 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json());
 
 //bring in models
-let plantData = require('./models/data')
+let plantData = require('./models/data');
+const { isDate } = require("util/types");
 // let Photo = require('./models/photos')
 
 
@@ -175,6 +176,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             // photo.userId = userId;
             // photo.photoId = id;
             // photo.responses = responses
+            // photo.date = isDate()
             // photo.save()
             // photo.save((error) => {
             //     if (error){
