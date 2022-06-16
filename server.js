@@ -88,7 +88,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
        
 
         //getting status from plantnet
-        if (data.results[0].score < 0.25 || status != 200){
+        if (data.results[0].score < 0.08 || status != 200){
             //changing id
             id++;
             return res.sendStatus(404);
@@ -119,54 +119,56 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
         axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
 
             //checking if image is proper with plant.id
-            if(ress.data.suggestions[0].probability < 0.1){
-                id = getRandomInt(10000000);
-                res.sendStatus(404);
-            }
-            else{
+            // if(ress.data.suggestions[0].probability < 0.4){
+            //     console.log(ress.data.suggestions[0].probability)
+            //     id = getRandomInt(10000000);
+            //     return res.sendStatus(404);
+            // }
+            
             //declaring variables
-                const plantName = ress.data.suggestions[0].plant_name;
-                const commonNames = ress.data.suggestions[0].plant_details.common_names;
-                const isHealthy = ress.data.health_assessment.is_healthy;
-                const healthProbability = ress.data.health_assessment.is_healthy_probability;
-                var health_details = ress.data.health_assessment.diseases
-                //checking if the plant is healthy
-                if (ress.data.health_assessment.is_healthy == false) {
-                
-                    //pushing response(unhealthy plant)
-                    responses.push(
-                        {plant_name: plantName ,
-                        common_names: commonNames,
-                        is_healthy: isHealthy,
-                        health_probabilty: healthProbability,
-                        health_details}
-                        );
-                    }
-
-                //pushing responses(healthy plant)
+            console.log(ress.data.suggestions[0].probability)
+            const plantName = ress.data.suggestions[0].plant_name;
+            const commonNames = ress.data.suggestions[0].plant_details.common_names;
+            const isHealthy = ress.data.health_assessment.is_healthy;
+            const healthProbability = ress.data.health_assessment.is_healthy_probability;
+            var health_details = ress.data.health_assessment.diseases
+            //checking if the plant is healthy
+            if (ress.data.health_assessment.is_healthy == false) {
+            
+                //pushing response(unhealthy plant)
                 responses.push(
-                    {plant_name: plantName,
+                    {plant_name: plantName ,
                     common_names: commonNames,
-                        is_healthy: isHealthy,
-                    health_probabilty: healthProbability}
+                    is_healthy: isHealthy,
+                    health_probabilty: healthProbability,
+                    health_details}
                     );
+                }
+
+            //pushing responses(healthy plant)
+            responses.push(
+                {plant_name: plantName,
+                common_names: commonNames,
+                is_healthy: isHealthy,
+                health_probabilty: healthProbability}
+                );
 
                 
-                //sending response
-                id = getRandomInt(10000000);
-                res.send(responses);
+            //sending response
+            id = getRandomInt(10000000);
+            res.send(responses);
 
             //storing model in db
-                let plantdata = new plantData()
-                plantdata.photo_id = id;
-                plantdata.response = responses;
-                plantdata.save((error) => {
-                    if (error){
-                    console.log(error);
-                }else{
-                        console.log('saved');
-                    }
-                });
+            let plantdata = new plantData()
+            plantdata.photo_id = id;
+            plantdata.response = responses;
+            plantdata.save((error) => {
+                if (error){
+                console.log(error);
+            }else{
+                    console.log('saved');
+                }
+            });
 
             //new Photo model
             // let photo = new Photo()
@@ -184,9 +186,9 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             // });
 
             //emtying responses array
-                responses = [];
-            }}
-            )}
+            responses = [];
+        }
+        )}
         catch(error){
             id = getRandomInt(10000000);
             console.log(error)
