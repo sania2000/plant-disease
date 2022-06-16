@@ -128,11 +128,7 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             const commonNames = ress.data.suggestions[0].plant_details.common_names;
             const isHealthy = ress.data.health_assessment.is_healthy;
             const healthProbability = ress.data.health_assessment.is_healthy_probability;
-            var health_details = ress.data.health_assessment.diseases.filter(
-                function (el) {
-                    return el.probability >= 0.1;
-                });
-
+            var health_details = ress.data.health_assessment.diseases
             //checking if the plant is healthy
             if (ress.data.health_assessment.is_healthy == false) {
                 
