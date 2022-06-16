@@ -118,54 +118,54 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
         axios.post("https://api.plant.id/v2/identify", data).then((ress) =>{
 
             //checking if image is proper with plant.id
-            if(!ress.data.suggestions[0].probability > 0.2){
+            if(ress.data.suggestions[1].probability < 0.2){
                 id = getRandomInt(10000000);
-                return res.sendStatus(404);
+                res.sendStatus(404);
             }
-
+            else{
             //declaring variables
-            const plantName = ress.data.suggestions[0].plant_name;
-            const commonNames = ress.data.suggestions[0].plant_details.common_names;
-            const isHealthy = ress.data.health_assessment.is_healthy;
-            const healthProbability = ress.data.health_assessment.is_healthy_probability;
-            var health_details = ress.data.health_assessment.diseases
-            //checking if the plant is healthy
-            if (ress.data.health_assessment.is_healthy == false) {
+                const plantName = ress.data.suggestions[0].plant_name;
+                const commonNames = ress.data.suggestions[0].plant_details.common_names;
+                const isHealthy = ress.data.health_assessment.is_healthy;
+                const healthProbability = ress.data.health_assessment.is_healthy_probability;
+                var health_details = ress.data.health_assessment.diseases
+                //checking if the plant is healthy
+                if (ress.data.health_assessment.is_healthy == false) {
                 
-                //pushing response(unhealthy plant)
+                    //pushing response(unhealthy plant)
+                    responses.push(
+                        {plant_name: plantName ,
+                        common_names: commonNames,
+                        is_healthy: isHealthy,
+                        health_probabilty: healthProbability,
+                        health_details}
+                        );
+                    }
+
+                //pushing responses(healthy plant)
                 responses.push(
-                    {plant_name: plantName ,
+                    {plant_name: plantName,
                     common_names: commonNames,
-                    is_healthy: isHealthy,
-                    health_probabilty: healthProbability,
-                    health_details}
+                        is_healthy: isHealthy,
+                    health_probabilty: healthProbability}
                     );
-                }
-
-            //pushing responses(healthy plant)
-            responses.push(
-                {plant_name: plantName,
-                common_names: commonNames,
-                is_healthy: isHealthy,
-                health_probabilty: healthProbability}
-                );
 
                 
-            //sending response
-            id = getRandomInt(10000000);
-            res.send(responses);
+                //sending response
+                id = getRandomInt(10000000);
+                res.send(responses);
 
             //storing model in db
-            let plantdata = new plantData()
-            plantdata.photo_id = id;
-            plantdata.response = responses;
-            plantdata.save((error) => {
-                if (error){
-                console.log(error);
-            }else{
-                    console.log('saved');
-                }
-            });
+                let plantdata = new plantData()
+                plantdata.photo_id = id;
+                plantdata.response = responses;
+                plantdata.save((error) => {
+                    if (error){
+                    console.log(error);
+                }else{
+                        console.log('saved');
+                    }
+                });
 
             //new Photo model
             // let photo = new Photo()
@@ -183,8 +183,8 @@ app.post("/disease", upload.single("image"), async (req, res) =>{
             // });
 
             //emtying responses array
-            responses = [];
-        }
+                responses = [];
+            }}
             )}
         catch(error){
             id = getRandomInt(10000000);
