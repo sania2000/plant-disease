@@ -151,22 +151,22 @@ app.post("/disease/:id", upload.single("image"), async (req, res) =>{
 
     //setting headers for plantnet
     try {
-        // var {status, data} = await axios.post(
-        //     "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
-        //     form, 
-        //     {
-        //         headers: form.getHeaders()
-        //     }
-        // );
+        var {status, data} = await axios.post(
+            "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
+            form, 
+            {
+                headers: form.getHeaders()
+            }
+        );
     
-        // //getting status from plantnet
-        // if (data.results[0].score < 0.08 || status != 200){
-        //     //changing id
-        //     id++;
-        //     return res.sendStatus(404);
-        // }
-        // console.log(status)
-        // console.log(data.results[0].score)
+        //getting status from plantnet
+        if (data.results[0].score < 0.08 || status != 200){
+            //changing id
+            id++;
+            return res.sendStatus(404);
+        }
+        console.log(status)
+        console.log(data.results[0].score)
 
         // //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
@@ -266,22 +266,22 @@ app.post("/disease/", upload.single("image"), async (req, res) =>{
 
     //setting headers for plantnet
     try {
-        // var {status, data} = await axios.post(
-        //     "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
-        //     form, 
-        //     {
-        //         headers: form.getHeaders()
-        //     }
-        // );
+        var {status, data} = await axios.post(
+            "https://my-api.plantnet.org/v2/identify/all?api-key=" + key,
+            form, 
+            {
+                headers: form.getHeaders()
+            }
+        );
     
-        // //getting status from plantnet
-        // if (data.results[0].score < 0.08 || status != 200){
-        //     //changing id
-        //     id++;
-        //     return res.sendStatus(404);
-        // }
-        // console.log(status)
-        // console.log(data.results[0].score)
+        //getting status from plantnet
+        if (data.results[0].score < 0.08 || status != 200){
+            //changing id
+            id++;
+            return res.sendStatus(404);
+        }
+        console.log(status)
+        console.log(data.results[0].score)
 
         // //setting headers for plant.id
         const files = ["./images/" + id + ".jpg"];
