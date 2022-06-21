@@ -1,6 +1,5 @@
 pg2.js
 config/db.js
-middleWare/upload.js
 pg.js
 ./images
 models/photos.js
