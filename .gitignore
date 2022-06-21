@@ -2,7 +2,6 @@ pg2.js
 config/db.js
 pg.js
 ./images
-models/photos.js
 images/1020064.jpg
 images/1143518.jpg
 images/2732388.jpg
