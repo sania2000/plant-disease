@@ -9,75 +9,75 @@ const mongoose = require('mongoose')
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const swaggerJSDocs =  YAML.load('./api.yaml');
-const {google} = require('googleapis'); 
-const CLIENT_ID = '14649930395-rkakhojgbg07ucfgh2ch9f7sjb1gqnjh.apps.googleusercontent.com';
-const CLIENT_SECRET = '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';
-const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-const REFRESH_TOKEN ='1//042OaMHCKwTYKCgYIARAAGAQSNwF-L9IrUuCUlt9OcjRbr-4HjVQrLEmqekyYDevu5r_uLSvpnHTcny_17oJrmHhQIw-7RjptZLI';
-const oauth2Client = new google.auth.OAuth2(
-    CLIENT_ID,
-    CLIENT_SECRET,
-    REDIRECT_URI
-)
+// const {google} = require('googleapis'); 
+// const CLIENT_ID = '14649930395-rkakhojgbg07ucfgh2ch9f7sjb1gqnjh.apps.googleusercontent.com';
+// const CLIENT_SECRET = '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';
+// const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
+// const REFRESH_TOKEN ='1//042OaMHCKwTYKCgYIARAAGAQSNwF-L9IrUuCUlt9OcjRbr-4HjVQrLEmqekyYDevu5r_uLSvpnHTcny_17oJrmHhQIw-7RjptZLI';
+// const oauth2Client = new google.auth.OAuth2(
+//     CLIENT_ID,
+//     CLIENT_SECRET,
+//     REDIRECT_URI
+// )
 
-oauth2Client.setCredentials({refresh_token: REFRESH_TOKEN})
+// oauth2Client.setCredentials({refresh_token: REFRESH_TOKEN})
 
-const drive = google.drive({
-    version: 'v3',
-    auth: oauth2Client
-})
+// const drive = google.drive({
+//     version: 'v3',
+//     auth: oauth2Client
+// })
 
-async function generatePublicLink(req,userId, responses){
-    try{
-        const fileId = req
-        await drive.permissions.create ({
-            fileId: fileId,
-            requestBody: {
-                role: 'reader',
-                type:'anyone'
-            }
-        })
-        const result = await drive.files.get({
-            fileId: fileId,
-            fields: 'webViewLink, webContentLink'
-        })
-        console.log(result.data)
-        //new Photo model
-        let photo = new Photo()
-        photo.userId = userId;
-        photo.photoId = result.data;
-        photo.responses = responses
+// async function generatePublicLink(req,userId, responses){
+//     try{
+//         const fileId = req
+//         await drive.permissions.create ({
+//             fileId: fileId,
+//             requestBody: {
+//                 role: 'reader',
+//                 type:'anyone'
+//             }
+//         })
+//         const result = await drive.files.get({
+//             fileId: fileId,
+//             fields: 'webViewLink, webContentLink'
+//         })
+//         console.log(result.data)
+//         //new Photo model
+//         let photo = new Photo()
+//         photo.userId = userId;
+//         photo.photoId = result.data;
+//         photo.responses = responses
 
-        photo.save((error) => {
-            if (error){
-            console.log(error);
-        }else{
-                console.log('saved');
-            }
-        });
-    }catch(error){
-        console.log(error)
-    }
-}
+//         photo.save((error) => {
+//             if (error){
+//             console.log(error);
+//         }else{
+//                 console.log('saved');
+//             }
+//         });
+//     }catch(error){
+//         console.log(error)
+//     }
+// }
 
-async function uploadFile(req, name, userId, responses){
-    try{
-        const response = await drive.files.create({
-            requestBody: {
-                name: name,
-                mimeType: 'image/jpg'
-            },
-            media: {
-                mimeType: 'image/jpg',
-                body: fs.createReadStream(req)
-            }
-        })
-        const data = response.data.id
-        generatePublicLink(data, userId, responses)
-    } catch(error){
-        console.log(error)
-    }
-}
+// async function uploadFile(req, name, userId, responses){
+//     try{
+//         const response = await drive.files.create({
+//             requestBody: {
+//                 name: name,
+//                 mimeType: 'image/jpg'
+//             },
+//             media: {
+//                 mimeType: 'image/jpg',
+//                 body: fs.createReadStream(req)
+//             }
+//         })
+//         const data = response.data.id
+//         generatePublicLink(data, userId, responses)
+//     } catch(error){
+//         console.log(error)
+//     }
+// }
 
 //connecting to db
 mongoose.connect('mongodb://127.0.0.1:27017/plantTips')
@@ -139,9 +139,9 @@ let responses = []
    
 
 //posting responses
-app.post("/disease/:id", upload.single("image"), async (req, res) =>{
+app.post("/disease/", upload.single("image"), async (req, res) =>{
     //getting user's id
-    const userId = req.params.id
+    // const userId = req.params.id
     
 
     //reading image
@@ -231,7 +231,7 @@ app.post("/disease/:id", upload.single("image"), async (req, res) =>{
             //sending response
             
             res.send(responses)
-            uploadFile(`./images/${id}.jpg`, `${id}.jpg`, userId, responses)
+            // uploadFile(`./images/${id}.jpg`, `${id}.jpg`, userId, responses)
             id = getRandomInt(10000000)
             //storing model in db
             let plantdata = new plantData()
