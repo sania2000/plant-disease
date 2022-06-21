@@ -1,9 +1,6 @@
 swagger: "2.0"
 info: 
   title: Plant-Disease API
-  servers: [{
-            url: "http://a2mp.site:2500",
-    }]
 paths:
   /history/{userid}:
     get:
